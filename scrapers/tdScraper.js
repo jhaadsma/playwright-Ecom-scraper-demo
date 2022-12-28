@@ -11,16 +11,19 @@ async function mainTd() {
 
 	productP = [];
 	productM = [];
-
+	
+	
 	const reelURL = await scrapeUrl();
 
 	var num = 0;
+	
 	while (num < reelURL.length){
 		console.log(reelURL[num]);
 		await page.goto(reelURL[num]);
 
 		const productModel =  await TD_PP_Scraper_Model(page);
 		const productPrice = await TD_PP_Scraper_Price(page);
+		
 		productM = productM.concat(productModel);
 		productP = productP.concat(productPrice);
 
@@ -28,24 +31,23 @@ async function mainTd() {
 
 	};
 
-	const productModelPrice = await new Object();
-	for (var i = 0; i < productM.length; i++){
 
-		productModelPrice[productM[i]]=productP[i];
-
-	}; 
+	//Combines name and price data into a single array object. 
+	const productModelPrice = await productM.map((name, index) => {
+		return {
+			[name]: productP[index]
+		};
+	});
 
  	await browser.close();
-
+ 	
 	return productModelPrice;
-	console.log(productModelPrice);
-	save_to_csv(productModelPrice);
+	
 
 };
 
 
 exports.mainTd = mainTd;
-
 
 async function TD_PP_Scraper_Model(page) {
 
@@ -55,17 +57,19 @@ async function TD_PP_Scraper_Model(page) {
 	await page.waitForSelector('.mpc-chart-row.mpc-chart-cell-row > .mpc-chart-cell > a', {state: 'hidden'});
 
 	const productModel = await page.$$eval('.mpc-chart-row.mpc-chart-cell-row > .mpc-chart-cell > a', all_items => {
+		
 		const data = [];
 
 		all_items.forEach(item => {
 	
 			const modelUrl = item.getAttribute('href'); 
-			const model = modelUrl.replace('.html', '');
+			const modelRough = modelUrl.replace('.html', '');
+			const model = modelRough.replace(/-/g, ' ');
+			
 			data.push(model);
 		
 			});
 		
-		console.log(data);
 		return data;
 
 		});  
@@ -85,15 +89,19 @@ async function TD_PP_Scraper_Price(page) {
 	await page.waitForSelector('.mpc-chart-row.mpc-chart-cell-row.mpc-chart-cell-row-mobile > .mpc-chart-cell > .mpc-price'); 
 
 	const productPrice = await page.$$eval('.mpc-chart-row.mpc-chart-cell-row.mpc-chart-cell-row-mobile > .mpc-chart-cell > .mpc-price', all_items => {
+		
 		const data = [];
+		
 		all_items.forEach(item => {
-		const price = item.innerText;
-		data.push(price);
+			const priceRaw = item.innerText;
+			const price = priceRaw.replace(',', '');
+			
+			data.push(price);
 		
 			});
 	
-	console.log(data);
-	return data;
+		console.log(data);
+		return data;
 	
 	});
 	
@@ -106,13 +114,17 @@ async function TD_PP_Scraper_Price(page) {
 
 
 async function scrapeUrl() {
+	
 	const browser = await playwright.chromium.launch();
 	const page = await browser.newPage();
+	
 	await page.goto(url);
 	await page.waitForSelector('.nxt-product-item-wrap > a');
 
 	const URLlist = await page.$$eval('.nxt-product-item-wrap > a', all_items => {
+		
 		const data = [];
+		
 		all_items.forEach(URLlist => {
 		
 			const href = URLlist.getAttribute('href'); 
@@ -133,8 +145,3 @@ async function scrapeUrl() {
 };
 
 
-function save_to_csv(product) {
-	
-	const csv = new ObjectsToCsv(product);
-	csv.toDisk('FINAL_US_REEL_DATA.csv');
-}
