@@ -19,6 +19,7 @@ Uses playwright to scrape website data.
 <br>
 <br>
 Current problems to solve:
+
 1. Matching of sub models not implemented (ie Shimano Stradic 4000XG will match with Shimano Stradic 4000HG)
 2. A small portion of products with unusually high or low prices or size numbers data do not output accurate data to the final array. (ie Shimano Stella 14000)
 3. Products that do not have size numbers will not match. (ie Shimano Ultegra surf)
