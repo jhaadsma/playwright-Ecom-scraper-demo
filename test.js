@@ -17,7 +17,7 @@ const csvFile = 'translations.csv';
 
 	const tackleDirect = await mainTd.mainTd();
 
-	const translateData = await translate.translate(translationData, tackleDirect, kakaku, api_key);
+	const translateData = await translate.translate(translationData, tackleDirect, kakaku);
 	
 
 	console.log(translateData);
