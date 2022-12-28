@@ -4,8 +4,17 @@ Data tool to compare the US MSRP of Japanese fishing reels to JDM reels to find 
  
  This data is outputted in the form of an easy to read CSV file as shown here:
 ![](https://user-images.githubusercontent.com/104689110/209743562-c83e7fe0-7ab4-4b0d-92d5-2eb3dca6706e.png)
+- 1st Column: Model name from US website
+- 2nd Column: Translation key English Value
+- 3rd Column: Model name from Japanese website
+- 4th Column: US website price in USD
+- 5th Column: Japanese website price in Yen
+- 6th Column: Japanese website price converted to USD
+- 7th Column: Discount percentage(if bought from Japanese website)
+- 8th Column: Link to Japanese product page
 
-
+<br>
+<br>
 Uses playwright to scrape website data. 
 
 Current problems to solve:
